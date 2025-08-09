@@ -1,4 +1,4 @@
-use std::io::{self, Read};
+use std::io;
 
 fn main() {
     let mut number: i32 = 0;
@@ -10,7 +10,7 @@ fn main() {
         If the next number is a multiple of 5, say Buzz.
         If your number is a multiple of 3 and 5, say FizzBuzz!
         
-        0"
+        {number}"
     );
 
     loop {
@@ -38,8 +38,7 @@ fn main() {
 }
 
 fn check_answer(num: i32, tack: &str) -> String {
-    let mods: (bool, bool) = (num % 3 == 0, num % 5 == 0);
-    match mods {
+    match (num % 3 == 0, num % 5 == 0) {
         (false, false) => num.to_string(),
         (true, false) => String::from("Fizz"),
         (false, true) => String::from("Buzz"),
