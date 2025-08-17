@@ -1,6 +1,6 @@
 use std::{error::Error, io};
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), std::io::Error> {
     let mut number: i32 = 0;
 
     println!(
@@ -19,23 +19,25 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         let answer = check_answer(number.checked_add(1).unwrap());
         io::stdin().read_line(&mut input)?;
+        let input = input.trim().to_ascii_lowercase();
 
         // Lowercase last so we don't check if we can lowercase the '!'. Optimizations are Critical here.
-        if !(input.trim().to_lowercase() == answer.strip_suffix("!").unwrap().to_lowercase()) {
+        if !(input == answer.strip_suffix("!").unwrap().to_lowercase()) {
             println!("Gotcha! It was {}!", answer);
             break;
         };
 
-        if let None = number.checked_add(1) { println!("I\'m tired... I give up... You win..."); break; }
+        // Checked_add doesn't assign. Fix tmr
+        if let None = number.checked_add(1) {
+            println!("I\'m tired... I give up... You win...");
+            break;
+        }
         println!("{}", check_answer(number))
     }
 
     println!("Press Enter to Exit");
-    io::stdin()
-        .read_line(&mut String::new())
-        .expect("Issue Reading Input but I don\'t care");
-
-    Ok(())
+    // Instead of returning Ok(()) explicitly, we can force it to here with the .and() method.
+    io::stdin().read_line(&mut String::new()).and(Ok(()))
 }
 
 fn check_answer(num: i32) -> String {
