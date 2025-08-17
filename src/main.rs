@@ -14,12 +14,12 @@ fn main() -> Result<(), std::io::Error> {
     );
 
     loop {
-        // User Input
+        // User Input, can't be made into one line because stdin only mutates strings.
         let mut input: String = String::new();
-
-        let answer = check_answer(number.checked_add(1).unwrap());
         io::stdin().read_line(&mut input)?;
         let input = input.trim().to_ascii_lowercase();
+
+        let answer = check_answer(number.checked_add(1).unwrap());
 
         // Lowercase last so we don't check if we can lowercase the '!'. Optimizations are Critical here.
         if !(input == answer.strip_suffix("!").unwrap().to_lowercase()) {
@@ -27,12 +27,17 @@ fn main() -> Result<(), std::io::Error> {
             break;
         };
 
-        // Checked_add doesn't assign. Fix tmr
-        if let None = number.checked_add(1) {
-            println!("I\'m tired... I give up... You win...");
-            break;
+        // Overflow will only ever occur during the computer as the i32 limit is odd, and the computer will only ever get odd numbers
+        match number.checked_add(1) {
+            Some(n) => {
+                number = n;
+                println!("{}", check_answer(number))
+            }
+            None => {
+                println!("I\'m tired... I give up... You win...");
+                break;
+            }
         }
-        println!("{}", check_answer(number))
     }
 
     println!("Press Enter to Exit");
