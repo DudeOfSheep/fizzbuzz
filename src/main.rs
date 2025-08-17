@@ -17,12 +17,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         // User Input
         let mut input: String = String::new();
 
-        number += 1;
+        let answer = check_answer(number.checked_add(1).unwrap());
         io::stdin().read_line(&mut input)?;
 
         // Lowercase last so we don't check if we can lowercase the '!'. Optimizations are Critical here.
-        if !(input.trim().to_lowercase() == check_answer(number).strip_suffix("!").unwrap().to_lowercase()) {
-            println!("Gotcha! It was {}!", check_answer(number));
+        if !(input.trim().to_lowercase() == answer.strip_suffix("!").unwrap().to_lowercase()) {
+            println!("Gotcha! It was {}!", answer);
             break;
         };
 
